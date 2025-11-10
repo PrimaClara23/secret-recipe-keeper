@@ -242,6 +242,22 @@ export async function encryptInput(
   userAddress: string,
   value: number
 ): Promise<EncryptedInput> {
+  if (!fhevm || typeof fhevm.createEncryptedInput !== 'function') {
+    throw new Error("Invalid FHEVM instance: createEncryptedInput method not available");
+  }
+  
+  if (!contractAddress || !contractAddress.startsWith('0x')) {
+    throw new Error("Invalid contract address format");
+  }
+  
+  if (!userAddress || !userAddress.startsWith('0x')) {
+    throw new Error("Invalid user address format");
+  }
+  
+  if (typeof value !== 'number' || isNaN(value) || value < 0) {
+    throw new Error("Value must be a non-negative number");
+  }
+  
   try {
     const encryptedInput = fhevm
       .createEncryptedInput(contractAddress, userAddress)
@@ -249,7 +265,14 @@ export async function encryptInput(
     
     const encrypted = await encryptedInput.encrypt();
     
-    // Convert to format required by contract
+    if (!encrypted || !encrypted.handles || encrypted.handles.length === 0) {
+      throw new Error("Encryption returned invalid result: no handles");
+    }
+    
+    if (!encrypted.inputProof) {
+      throw new Error("Encryption returned invalid result: no input proof");
+    }
+    
     const handles = encrypted.handles.map(handle => {
       const hexHandle = ethers.hexlify(handle);
       if (hexHandle.length < 66) {
@@ -323,54 +346,15 @@ export async function decryptEuint32(
       methods: Object.getOwnPropertyNames(Object.getPrototypeOf(mockInstance)),
     });
     
-    // Ensure generateKeypair method exists (needed for EIP712 signature)
-    if (typeof mockInstance.generateKeypair !== 'function') {
-      console.log('[decryptEuint32] Adding generateKeypair to Mock instance...');
-      (mockInstance as any).generateKeypair = () => ({
-        publicKey: new Uint8Array(32).fill(0),
-        privateKey: new Uint8Array(32).fill(0),
-      });
-      console.log('[decryptEuint32] ✅ Added generateKeypair method');
-    }
-    
-    // Use instance.userDecrypt method (following privateself project pattern)
-    // Even for local network, we need to create EIP712 signature
-    const keypair = mockInstance.generateKeypair();
-    const contractAddresses = [contractAddress];
-    const startTimeStamp = Math.floor(Date.now() / 1000).toString();
-    const durationDays = "10";
-    
-    // Create EIP712 typed data for decryption request
-    const eip712 = mockInstance.createEIP712(
-      keypair.publicKey,
-      contractAddresses,
-      startTimeStamp,
-      durationDays
-    );
-    
-    // Sign the EIP712 message
-    const signature = await signer.signTypedData(
-      eip712.domain,
-      { UserDecryptRequestVerification: eip712.types.UserDecryptRequestVerification },
-      eip712.message
-    );
-    
-    console.log('[Decrypt] Decrypting with instance.userDecrypt (Mock)...', {
-      contractAddress,
-      handle,
-      userAddress,
-    });
-    
-    // Use userDecrypt method (same as privateself project)
     const result = await mockInstance.userDecrypt(
       [{ handle, contractAddress }],
-      keypair.privateKey,
-      keypair.publicKey,
-      signature.replace("0x", ""),
-      contractAddresses,
+      new Uint8Array(32).fill(0),
+      new Uint8Array(32).fill(0),
+      "",
+      [contractAddress],
       userAddress,
-      startTimeStamp,
-      durationDays
+      Math.floor(Date.now() / 1000).toString(),
+      "10"
     );
     
     const value = result[handle];

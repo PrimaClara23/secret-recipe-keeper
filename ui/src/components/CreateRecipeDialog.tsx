@@ -80,6 +80,16 @@ const CreateRecipeDialog = () => {
       return;
     }
 
+    if (formData.ingredients.length > 20) {
+      toast.error('Maximum 20 ingredients allowed');
+      return;
+    }
+
+    if (formData.steps.length > 20) {
+      toast.error('Maximum 20 steps allowed');
+      return;
+    }
+
     try {
       // Filter out empty ingredients and steps
       const validIngredients = formData.ingredients

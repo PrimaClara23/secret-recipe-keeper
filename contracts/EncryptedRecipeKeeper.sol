@@ -260,6 +260,8 @@ contract EncryptedRecipeKeeper is SepoliaConfig {
 
     /// @notice Delete recipe (only by owner)
     function deleteRecipe(uint256 recipeId) external onlyChef(recipeId) whenNotPaused {
+        require(recipes[recipeId].isActive, "Recipe is already inactive");
+
         recipes[recipeId].isActive = false;
         _userRecipeCount[msg.sender]--;
 

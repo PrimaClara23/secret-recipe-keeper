@@ -89,7 +89,7 @@ export const useRecipe = (recipeId: number) => {
     abi: CONTRACT_ABI,
     functionName: 'getRecipe',
     args: [recipeId],
-    enabled: !!contractAddress,
+    enabled: !!contractAddress && recipeId >= 0,
   });
 
   // Transform the tuple result into a Recipe object

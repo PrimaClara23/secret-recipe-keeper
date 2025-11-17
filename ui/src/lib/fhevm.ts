@@ -245,34 +245,34 @@ export async function encryptInput(
   if (!fhevm || typeof fhevm.createEncryptedInput !== 'function') {
     throw new Error("Invalid FHEVM instance: createEncryptedInput method not available");
   }
-  
+
   if (!contractAddress || !contractAddress.startsWith('0x')) {
     throw new Error("Invalid contract address format");
   }
-  
+
   if (!userAddress || !userAddress.startsWith('0x')) {
     throw new Error("Invalid user address format");
   }
-  
+
   if (typeof value !== 'number' || isNaN(value) || value < 0) {
     throw new Error("Value must be a non-negative number");
   }
-  
+
   try {
     const encryptedInput = fhevm
       .createEncryptedInput(contractAddress, userAddress)
       .add32(value);
-    
+
     const encrypted = await encryptedInput.encrypt();
-    
+
     if (!encrypted || !encrypted.handles || encrypted.handles.length === 0) {
       throw new Error("Encryption returned invalid result: no handles");
     }
-    
+
     if (!encrypted.inputProof) {
       throw new Error("Encryption returned invalid result: no input proof");
     }
-    
+
     const handles = encrypted.handles.map(handle => {
       const hexHandle = ethers.hexlify(handle);
       if (hexHandle.length < 66) {
@@ -284,7 +284,7 @@ export async function encryptInput(
       }
       return hexHandle;
     });
-    
+
     return {
       handles,
       inputProof: ethers.hexlify(encrypted.inputProof),
@@ -292,6 +292,27 @@ export async function encryptInput(
   } catch (error: any) {
     console.error("[FHEVM] Encryption failed:", error);
     throw new Error(`Encryption failed: ${error.message || "Unknown error"}`);
+  }
+}
+
+/**
+ * Validate network compatibility for FHEVM operations
+ */
+export function validateNetworkForFHEVM(chainId: number): boolean {
+  return chainId === 31337 || chainId === 11155111;
+}
+
+/**
+ * Get network name for display
+ */
+export function getNetworkName(chainId: number): string {
+  switch (chainId) {
+    case 31337:
+      return "Local Hardhat";
+    case 11155111:
+      return "Sepolia Testnet";
+    default:
+      return `Chain ${chainId}`;
   }
 }
 

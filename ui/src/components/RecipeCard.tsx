@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { useAccount, useChainId } from 'wagmi';
 import { toast } from 'sonner';
 import { useRecipe, useRecipeIngredients, useRecipeSteps } from '@/hooks/useRecipeContract';
-import { getFHEVMInstance, decryptEuint32, resetFHEVMInstance } from '@/lib/fhevm';
+import { getFHEVMInstance, decryptEuint32, resetFHEVMInstance, validateNetworkForFHEVM } from '@/lib/fhevm';
 import { getContractAddress } from '@/config/contracts';
 import { ethers } from 'ethers';
 
@@ -91,10 +91,16 @@ const RecipeCard = ({ recipeId }: RecipeCardProps) => {
           isEncrypted: ingredientEncrypted[index],
           ingredientEncryptedArray: ingredientEncrypted,
         });
-        
+
         if (!ingredientEncrypted[index]) {
           console.log('[Decrypt] Ingredient is not encrypted, skipping decryption');
           toast.info('This ingredient is not encrypted');
+          return;
+        }
+
+        // Validate network support
+        if (!validateNetworkForFHEVM(chainId)) {
+          toast.error(`Network not supported for decryption. Please switch to Local or Sepolia.`);
           return;
         }
         

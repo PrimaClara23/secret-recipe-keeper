@@ -307,4 +307,18 @@ contract EncryptedRecipeKeeper is SepoliaConfig {
         require(recipeId < recipeCount, "Recipe does not exist");
         return recipes[recipeId].chef;
     }
+
+    /// @notice Validate recipe ownership
+    /// @param recipeId Recipe ID
+    /// @param user Address to check ownership for
+    function isRecipeOwner(uint256 recipeId, address user) external view returns (bool) {
+        require(recipeId < recipeCount, "Recipe does not exist");
+        require(user != address(0), "Invalid user address");
+        return recipes[recipeId].chef == user;
+    }
+
+    /// @notice Get contract version
+    function getVersion() external pure returns (string memory) {
+        return "1.0.0";
+    }
 }

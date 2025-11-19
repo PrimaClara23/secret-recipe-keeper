@@ -5,12 +5,14 @@ import {FHE, euint32, externalEuint32} from "@fhevm/solidity/lib/FHE.sol";
 import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
 /// @title EncryptedRecipeKeeper - Privacy-Preserving Recipe Management System
-/// @author secret-recipe-keeper
+/// @author PrimaClara23 & GregaryRichardson
 /// @notice A fully homomorphic encryption (FHE) based recipe keeper that allows chefs to submit
 ///         encrypted recipes with protected ingredients and steps. Only the recipe owner can decrypt their data.
 /// @dev This contract uses Zama's FHEVM technology to perform computations on encrypted data.
 ///      Recipe ingredients and steps can be selectively encrypted (up to 2 encrypted items per recipe).
+///      Supports both local Hardhat network (31337) and Sepolia testnet (11155111).
 /// @custom:security-contact security@secret-recipe-keeper.com
+/// @custom:version 1.0.0
 contract EncryptedRecipeKeeper is SepoliaConfig {
     address public owner;
     bool public paused;

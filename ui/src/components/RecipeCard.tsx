@@ -419,14 +419,14 @@ const RecipeCard = ({ recipeId }: RecipeCardProps) => {
     : [];
 
   return (
-    <Card className="shadow-card hover:shadow-card-hover transition-shadow">
+    <Card className="shadow-card hover:shadow-card-hover transition-shadow w-full">
       <CardHeader>
         <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <CardTitle className="text-xl">{recipe.title || 'Untitled Recipe'}</CardTitle>
-            <CardDescription className="mt-1">{recipe.description || 'No description'}</CardDescription>
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-xl truncate">{recipe.title || 'Untitled Recipe'}</CardTitle>
+            <CardDescription className="mt-1 line-clamp-2">{recipe.description || 'No description'}</CardDescription>
           </div>
-          <ChefHat className="h-6 w-6 text-accent" />
+          <ChefHat className="h-6 w-6 text-accent flex-shrink-0 ml-2" />
         </div>
         <div className="flex items-center gap-4 text-sm text-muted-foreground mt-3">
           <div className="flex items-center gap-1">

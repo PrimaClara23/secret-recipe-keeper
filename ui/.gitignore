@@ -12,20 +12,6 @@ dist
 dist-ssr
 *.local
 
-# Environment variables
-.env
-.env.*
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Hardhat files
-cache
-artifacts
-typechain-types
-deployment-info.json
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -36,9 +22,3 @@ deployment-info.json
 *.njsproj
 *.sln
 *.sw?
-
-# Private keys and sensitive data
-*.pem
-*.key
-private-keys/
-secrets/

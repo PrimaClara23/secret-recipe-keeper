@@ -16,14 +16,25 @@ export default defineConfig(({ mode }) => ({
       // Alias for types directory - resolves to project root/types
       "../../types": path.resolve(__dirname, "../types"),
     },
+    dedupe: ['ethers'],
+    // Ensure node_modules resolution works for types directory
+    preserveSymlinks: false,
   },
   build: {
     commonjsOptions: {
       include: [/types/, /node_modules/],
       transformMixedEsModules: true,
+      requireReturnsDefault: 'auto',
     },
     rollupOptions: {
-      // Ensure ethers is properly resolved
+      // Ensure all imports are resolved, don't externalize anything
+      external: (id) => {
+        // Don't externalize ethers or any types directory imports
+        if (id === 'ethers' || id.startsWith('ethers/')) {
+          return false;
+        }
+        return false;
+      },
       output: {
         manualChunks: undefined,
       },

@@ -9,6 +9,9 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "VITE_WALLET_CONNECT_PROJECT_ID": "@vite_wallet_connect_project_id"
+  }
 }
 

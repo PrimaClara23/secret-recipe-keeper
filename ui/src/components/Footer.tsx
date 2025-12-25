@@ -1,30 +1,58 @@
-import { Progress } from '@/components/ui/progress';
-import { useEffect, useState } from 'react';
+import { ChefHat, Github, Twitter, Shield } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Footer = () => {
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        const next = prev + Math.random() * 5;
-        return next >= 100 ? 0 : next;
-      });
-    }, 500);
-
-    return () => clearInterval(timer);
-  }, []);
-
   return (
-    <footer className="border-t border-border bg-card">
-      <div className="container py-6">
-        <div className="mb-3">
-          <p className="text-sm font-medium text-muted-foreground mb-2">Cooking Progress</p>
-          <Progress value={progress} className="h-2" />
+    <footer className="border-t border-border bg-card/50">
+      <div className="container py-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <ChefHat className="h-6 w-6 text-primary" />
+              <span className="font-bold text-foreground">Secret Recipe Keeper</span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Protect your culinary innovations with fully homomorphic encryption on the blockchain.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="font-semibold text-foreground">Security</h4>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Shield className="h-4 w-4 text-success" />
+              <span>FHE-Protected Data</span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Your secret ingredients are encrypted using Zama's FHEVM technology.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="font-semibold text-foreground">Connect</h4>
+            <div className="flex items-center gap-4">
+              <motion.a
+                href="#"
+                whileHover={{ scale: 1.1 }}
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Github className="h-5 w-5" />
+              </motion.a>
+              <motion.a
+                href="#"
+                whileHover={{ scale: 1.1 }}
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Twitter className="h-5 w-5" />
+              </motion.a>
+            </div>
+          </div>
         </div>
-        <p className="text-xs text-center text-muted-foreground">
-          © 2025 Encrypted Recipe Collaboration. All recipes protected.
-        </p>
+
+        <div className="mt-8 pt-6 border-t border-border">
+          <p className="text-xs text-center text-muted-foreground">
+            &copy; 2025 Secret Recipe Keeper. All recipes protected with FHE encryption.
+          </p>
+        </div>
       </div>
     </footer>
   );

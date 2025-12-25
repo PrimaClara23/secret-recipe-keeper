@@ -27,18 +27,25 @@ export interface EncryptedRecipeKeeperInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "deleteRecipe"
+      | "getContractStats"
+      | "getDeploymentTimestamp"
       | "getEncryptedIngredient"
       | "getRecipe"
       | "getRecipeCount"
       | "getRecipeIngredients"
+      | "getRecipeOwner"
       | "getRecipeSteps"
       | "getUserRecipeCount"
       | "getUserRecipes"
+      | "getVersion"
+      | "isRecipeOwner"
+      | "isUpgradeable"
       | "owner"
       | "pause"
       | "paused"
       | "protocolId"
       | "recipeCount"
+      | "recipeExists"
       | "recipes"
       | "submitRecipe"
       | "transferOwnership"
@@ -60,6 +67,14 @@ export interface EncryptedRecipeKeeperInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getContractStats",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDeploymentTimestamp",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getEncryptedIngredient",
     values: [BigNumberish, BigNumberish]
   ): string;
@@ -76,6 +91,10 @@ export interface EncryptedRecipeKeeperInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getRecipeOwner",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getRecipeSteps",
     values: [BigNumberish]
   ): string;
@@ -87,6 +106,18 @@ export interface EncryptedRecipeKeeperInterface extends Interface {
     functionFragment: "getUserRecipes",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getVersion",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isRecipeOwner",
+    values: [BigNumberish, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isUpgradeable",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(functionFragment: "pause", values?: undefined): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
@@ -97,6 +128,10 @@ export interface EncryptedRecipeKeeperInterface extends Interface {
   encodeFunctionData(
     functionFragment: "recipeCount",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "recipeExists",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "recipes",
@@ -127,6 +162,14 @@ export interface EncryptedRecipeKeeperInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getContractStats",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDeploymentTimestamp",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getEncryptedIngredient",
     data: BytesLike
   ): Result;
@@ -137,6 +180,10 @@ export interface EncryptedRecipeKeeperInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getRecipeIngredients",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRecipeOwner",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -151,12 +198,25 @@ export interface EncryptedRecipeKeeperInterface extends Interface {
     functionFragment: "getUserRecipes",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getVersion", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isRecipeOwner",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isUpgradeable",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "protocolId", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "recipeCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "recipeExists",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "recipes", data: BytesLike): Result;
@@ -172,11 +232,20 @@ export interface EncryptedRecipeKeeperInterface extends Interface {
 }
 
 export namespace OwnershipTransferredEvent {
-  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
-  export type OutputTuple = [previousOwner: string, newOwner: string];
+  export type InputTuple = [
+    previousOwner: AddressLike,
+    newOwner: AddressLike,
+    timestamp: BigNumberish
+  ];
+  export type OutputTuple = [
+    previousOwner: string,
+    newOwner: string,
+    timestamp: bigint
+  ];
   export interface OutputObject {
     previousOwner: string;
     newOwner: string;
+    timestamp: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -185,10 +254,11 @@ export namespace OwnershipTransferredEvent {
 }
 
 export namespace PausedEvent {
-  export type InputTuple = [account: AddressLike];
-  export type OutputTuple = [account: string];
+  export type InputTuple = [account: AddressLike, timestamp: BigNumberish];
+  export type OutputTuple = [account: string, timestamp: bigint];
   export interface OutputObject {
     account: string;
+    timestamp: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -197,11 +267,16 @@ export namespace PausedEvent {
 }
 
 export namespace RecipeDeletedEvent {
-  export type InputTuple = [recipeId: BigNumberish, chef: AddressLike];
-  export type OutputTuple = [recipeId: bigint, chef: string];
+  export type InputTuple = [
+    recipeId: BigNumberish,
+    chef: AddressLike,
+    timestamp: BigNumberish
+  ];
+  export type OutputTuple = [recipeId: bigint, chef: string, timestamp: bigint];
   export interface OutputObject {
     recipeId: bigint;
     chef: string;
+    timestamp: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -235,11 +310,16 @@ export namespace RecipeSubmittedEvent {
 }
 
 export namespace RecipeUpdatedEvent {
-  export type InputTuple = [recipeId: BigNumberish, chef: AddressLike];
-  export type OutputTuple = [recipeId: bigint, chef: string];
+  export type InputTuple = [
+    recipeId: BigNumberish,
+    chef: AddressLike,
+    timestamp: BigNumberish
+  ];
+  export type OutputTuple = [recipeId: bigint, chef: string, timestamp: bigint];
   export interface OutputObject {
     recipeId: bigint;
     chef: string;
+    timestamp: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -248,10 +328,11 @@ export namespace RecipeUpdatedEvent {
 }
 
 export namespace UnpausedEvent {
-  export type InputTuple = [account: AddressLike];
-  export type OutputTuple = [account: string];
+  export type InputTuple = [account: AddressLike, timestamp: BigNumberish];
+  export type OutputTuple = [account: string, timestamp: bigint];
   export interface OutputObject {
     account: string;
+    timestamp: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -308,6 +389,20 @@ export interface EncryptedRecipeKeeper extends BaseContract {
     "nonpayable"
   >;
 
+  getContractStats: TypedContractMethod<
+    [],
+    [
+      [bigint, bigint, bigint] & {
+        totalRecipes: bigint;
+        activeRecipes: bigint;
+        totalUsers: bigint;
+      }
+    ],
+    "view"
+  >;
+
+  getDeploymentTimestamp: TypedContractMethod<[], [bigint], "view">;
+
   getEncryptedIngredient: TypedContractMethod<
     [recipeId: BigNumberish, ingredientIndex: BigNumberish],
     [string],
@@ -337,6 +432,12 @@ export interface EncryptedRecipeKeeper extends BaseContract {
     "view"
   >;
 
+  getRecipeOwner: TypedContractMethod<
+    [recipeId: BigNumberish],
+    [string],
+    "view"
+  >;
+
   getRecipeSteps: TypedContractMethod<
     [recipeId: BigNumberish],
     [
@@ -353,6 +454,16 @@ export interface EncryptedRecipeKeeper extends BaseContract {
 
   getUserRecipes: TypedContractMethod<[user: AddressLike], [bigint[]], "view">;
 
+  getVersion: TypedContractMethod<[], [string], "view">;
+
+  isRecipeOwner: TypedContractMethod<
+    [recipeId: BigNumberish, user: AddressLike],
+    [boolean],
+    "view"
+  >;
+
+  isUpgradeable: TypedContractMethod<[], [boolean], "view">;
+
   owner: TypedContractMethod<[], [string], "view">;
 
   pause: TypedContractMethod<[], [void], "nonpayable">;
@@ -362,6 +473,12 @@ export interface EncryptedRecipeKeeper extends BaseContract {
   protocolId: TypedContractMethod<[], [bigint], "view">;
 
   recipeCount: TypedContractMethod<[], [bigint], "view">;
+
+  recipeExists: TypedContractMethod<
+    [recipeId: BigNumberish],
+    [boolean],
+    "view"
+  >;
 
   recipes: TypedContractMethod<
     [arg0: BigNumberish],
@@ -410,6 +527,22 @@ export interface EncryptedRecipeKeeper extends BaseContract {
     nameOrSignature: "deleteRecipe"
   ): TypedContractMethod<[recipeId: BigNumberish], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "getContractStats"
+  ): TypedContractMethod<
+    [],
+    [
+      [bigint, bigint, bigint] & {
+        totalRecipes: bigint;
+        activeRecipes: bigint;
+        totalUsers: bigint;
+      }
+    ],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getDeploymentTimestamp"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "getEncryptedIngredient"
   ): TypedContractMethod<
     [recipeId: BigNumberish, ingredientIndex: BigNumberish],
@@ -443,6 +576,9 @@ export interface EncryptedRecipeKeeper extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "getRecipeOwner"
+  ): TypedContractMethod<[recipeId: BigNumberish], [string], "view">;
+  getFunction(
     nameOrSignature: "getRecipeSteps"
   ): TypedContractMethod<
     [recipeId: BigNumberish],
@@ -458,6 +594,19 @@ export interface EncryptedRecipeKeeper extends BaseContract {
     nameOrSignature: "getUserRecipes"
   ): TypedContractMethod<[user: AddressLike], [bigint[]], "view">;
   getFunction(
+    nameOrSignature: "getVersion"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "isRecipeOwner"
+  ): TypedContractMethod<
+    [recipeId: BigNumberish, user: AddressLike],
+    [boolean],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "isUpgradeable"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
@@ -472,6 +621,9 @@ export interface EncryptedRecipeKeeper extends BaseContract {
   getFunction(
     nameOrSignature: "recipeCount"
   ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "recipeExists"
+  ): TypedContractMethod<[recipeId: BigNumberish], [boolean], "view">;
   getFunction(
     nameOrSignature: "recipes"
   ): TypedContractMethod<
@@ -556,7 +708,7 @@ export interface EncryptedRecipeKeeper extends BaseContract {
   >;
 
   filters: {
-    "OwnershipTransferred(address,address)": TypedContractEvent<
+    "OwnershipTransferred(address,address,uint256)": TypedContractEvent<
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
@@ -567,7 +719,7 @@ export interface EncryptedRecipeKeeper extends BaseContract {
       OwnershipTransferredEvent.OutputObject
     >;
 
-    "Paused(address)": TypedContractEvent<
+    "Paused(address,uint256)": TypedContractEvent<
       PausedEvent.InputTuple,
       PausedEvent.OutputTuple,
       PausedEvent.OutputObject
@@ -578,7 +730,7 @@ export interface EncryptedRecipeKeeper extends BaseContract {
       PausedEvent.OutputObject
     >;
 
-    "RecipeDeleted(uint256,address)": TypedContractEvent<
+    "RecipeDeleted(uint256,address,uint256)": TypedContractEvent<
       RecipeDeletedEvent.InputTuple,
       RecipeDeletedEvent.OutputTuple,
       RecipeDeletedEvent.OutputObject
@@ -600,7 +752,7 @@ export interface EncryptedRecipeKeeper extends BaseContract {
       RecipeSubmittedEvent.OutputObject
     >;
 
-    "RecipeUpdated(uint256,address)": TypedContractEvent<
+    "RecipeUpdated(uint256,address,uint256)": TypedContractEvent<
       RecipeUpdatedEvent.InputTuple,
       RecipeUpdatedEvent.OutputTuple,
       RecipeUpdatedEvent.OutputObject
@@ -611,7 +763,7 @@ export interface EncryptedRecipeKeeper extends BaseContract {
       RecipeUpdatedEvent.OutputObject
     >;
 
-    "Unpaused(address)": TypedContractEvent<
+    "Unpaused(address,uint256)": TypedContractEvent<
       UnpausedEvent.InputTuple,
       UnpausedEvent.OutputTuple,
       UnpausedEvent.OutputObject

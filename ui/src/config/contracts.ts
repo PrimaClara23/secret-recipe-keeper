@@ -1,14 +1,13 @@
 // Import factory - Vite will handle the ethers dependency resolution
-// Path is relative to ui/src/config, going up to project root to access types
-import { EncryptedRecipeKeeper__factory } from '../../../types/factories/contracts/EncryptedRecipeKeeper__factory';
+import { EncryptedRecipeKeeper__factory } from "../../../types/factories/contracts/EncryptedRecipeKeeper__factory";
 
 // Contract addresses for different networks
 export const CONTRACT_ADDRESSES = {
   // Local development (hardhat)
-  31337: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
+  31337: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
 
-  // Sepolia testnet (will be updated after deployment)
-  11155111: '', // To be filled after sepolia deployment
+  // Sepolia testnet (update after deployment)
+  11155111: "",
 } as const;
 
 // Contract factory for deployment

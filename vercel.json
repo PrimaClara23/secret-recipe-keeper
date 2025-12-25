@@ -1,7 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "cd ui && npm install && npm run build",
-  "outputDirectory": "ui/dist",
+  "root": "ui",
+  "buildCommand": "npm install && npm run build",
+  "outputDirectory": "dist",
   "installCommand": "npm install",
   "framework": "vite",
   "rewrites": [

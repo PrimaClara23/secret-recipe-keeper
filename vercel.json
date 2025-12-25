@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "npm install && npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "cd ui && npm install && npm run build",
+  "outputDirectory": "ui/dist",
   "installCommand": "npm install",
   "framework": "vite",
   "rewrites": [
@@ -9,9 +9,6 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "env": {
-    "VITE_WALLET_CONNECT_PROJECT_ID": "@vite_wallet_connect_project_id"
-  }
+  ]
 }
 

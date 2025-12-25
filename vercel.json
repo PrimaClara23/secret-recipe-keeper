@@ -1,9 +1,8 @@
 {
   "version": 2,
-  "root": "ui",
-  "buildCommand": "npm install && npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm install",
+  "buildCommand": "npm install --prefix ui && npm run build --prefix ui",
+  "outputDirectory": "ui/dist",
+  "installCommand": "npm install --prefix ui",
   "framework": "vite",
   "rewrites": [
     {
